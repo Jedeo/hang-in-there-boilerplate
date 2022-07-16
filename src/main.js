@@ -18,6 +18,8 @@ var savedPosterSection = document.querySelector('.saved-posters');
 // section buttons
 var nevermindButton = document.querySelector('.show-main');
 var backToMainButton = document.querySelector('.back-to-main');
+var showMyPosterButton = document.querySelector('.make-poster');
+
 
 // we've provided you with some data to work with 👇
 var images = [
@@ -132,6 +134,7 @@ showSavedButton.addEventListener('click', showSavedPosters);
 // section event listeners
 nevermindButton.addEventListener('click', formToMain);
 backToMainButton.addEventListener('click', savedToMain);
+showMyPosterButton.addEventListener('click', displayUserPoster);
 
 // functions and event handlers go here 👇
 // (we've provided one for you to get you started)!
@@ -152,27 +155,49 @@ function displayRandomPoster(){
   var randomQuoteNum = getRandomIndex(quotes);
   posterQuote.innerText = quotes[randomQuoteNum];
 }
-
 //section change functions
-
 function showForm() {
-  mainPosterSection.classList.add('hidden'); // add CSS property hidden to main poster section
   posterFormSection.classList.toggle('hidden'); // toggle CSS property hidden on poster form section
+  mainPosterSection.classList.toggle('hidden'); // add CSS property hidden to main poster section
 }
 
 function showSavedPosters() {
-  mainPosterSection.classList.add('hidden');
+  mainPosterSection.classList.toggle('hidden');
   savedPosterSection.classList.toggle('hidden');
+}
+
+function displayUserPoster() {
+  collectUserInput();
+  showForm(); //bug to do with either showForm function or main page display;
+  // Use the new instance of the Poster class (part of your data model) to
+  // display the newly created poster image, title, and quote in the main view on the DOM
+  posterImg.src = images[images.length - 1];
+  posterTitle.innerText = titles[titles.length - 1];
+  posterQuote.innerText = quotes[quotes.length - 1];
 }
 
 //back to main page functions
 
 function formToMain() {
-  mainPosterSection.classList.toggle('hidden');
   posterFormSection.classList.toggle('hidden');
+  mainPosterSection.classList.toggle('hidden');
 }
 
 function savedToMain() {
   mainPosterSection.classList.toggle('hidden');
   savedPosterSection.classList.toggle('hidden');
+}
+
+//show my poster functionality
+function collectUserInput() {
+  //collecting userInputs
+  let userUrlInput = document.getElementById('poster-image-url').value;
+  let userTitleInput = document.getElementById('poster-title').value;
+  let userQuoteInput = document.getElementById('poster-quote').value;
+  // instantiating a new Poster object instance, called userPoster
+  let userPoster = new Poster(userUrlInput, userTitleInput, userQuoteInput);
+  //pushing userInputs to respective arrays
+  images.push(userPoster.imageURL);
+  titles.push(userPoster.title);
+  quotes.push(userPoster.quote);
 }
