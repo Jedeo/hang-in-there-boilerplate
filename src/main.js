@@ -18,6 +18,8 @@ var savedPosterSection = document.querySelector('.saved-posters');
 // section buttons
 var nevermindButton = document.querySelector('.show-main');
 var backToMainButton = document.querySelector('.back-to-main');
+var showMyPosterButton = document.querySelector('.make-poster');
+
 
 // we've provided you with some data to work with 👇
 var images = [
@@ -132,6 +134,15 @@ showSavedButton.addEventListener('click', showSavedPosters);
 // section event listeners
 nevermindButton.addEventListener('click', formToMain);
 backToMainButton.addEventListener('click', savedToMain);
+showMyPosterButton.addEventListener('click', function(event) {
+  formToMain();
+  collectUserInput();
+  posterImg.src = images[images.length - 1];
+  posterTitle.innerText = titles[titles.length - 1];
+  posterQuote.innerText = quotes[quotes.length - 1];
+  event.preventDefault();
+});
+//showMyPosterButton.addEventListener('reload', displayUserPoster);
 
 // functions and event handlers go here 👇
 // (we've provided one for you to get you started)!
@@ -152,27 +163,53 @@ function displayRandomPoster(){
   var randomQuoteNum = getRandomIndex(quotes);
   posterQuote.innerText = quotes[randomQuoteNum];
 }
-
 //section change functions
-
 function showForm() {
-  mainPosterSection.classList.add('hidden'); // add CSS property hidden to main poster section
+  mainPosterSection.classList.toggle('hidden'); // add CSS property hidden to main poster section
   posterFormSection.classList.toggle('hidden'); // toggle CSS property hidden on poster form section
 }
 
 function showSavedPosters() {
-  mainPosterSection.classList.add('hidden');
+  mainPosterSection.classList.toggle('hidden');
   savedPosterSection.classList.toggle('hidden');
 }
 
-//back to main page functions
+// function displayUserPoster() {
+//   showForm();
+//   posterFormSection.classList.toggle('hidden');
+//   mainPosterSection.classList.toggle('hidden');
+//   collectUserInput();
+//   posterImg.src = images[images.length - 1];
+//   posterTitle.innerText = titles[titles.length - 1];
+//   posterQuote.innerText = quotes[quotes.length - 1];
+// }
 
+//back to main page functions
 function formToMain() {
-  mainPosterSection.classList.toggle('hidden');
   posterFormSection.classList.toggle('hidden');
+  mainPosterSection.classList.toggle('hidden');
 }
 
 function savedToMain() {
   mainPosterSection.classList.toggle('hidden');
   savedPosterSection.classList.toggle('hidden');
 }
+
+//show my poster functionality
+function collectUserInput() {
+  //collecting userInputs
+  let userUrlInput = document.getElementById('poster-image-url').value;
+  let userTitleInput = document.getElementById('poster-title').value;
+  let userQuoteInput = document.getElementById('poster-quote').value;
+  // instantiating a new Poster object instance, called userPoster
+  let userPoster = new Poster(userUrlInput, userTitleInput, userQuoteInput);
+  //pushing userInputs to respective arrays
+  images.push(userPoster.imageURL);
+  titles.push(userPoster.title);
+  quotes.push(userPoster.quote);
+}
+// ///save poster to saved poster section
+// When a user clicks the “Save This Poster” button, the current main poster will be added to the savedPosters array.
+// If a user clicks the “Save This Poster” more than once on a single poster, it will still only be saved once (no duplicates)
+// When a user clicks the “Show Saved Posters” button, we should see the saved posters section
+// All the posters in the savedPosters array should be displayed in the saved posters grid section
