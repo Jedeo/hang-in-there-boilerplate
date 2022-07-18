@@ -122,6 +122,7 @@ var quotes = [
 ];
 
 var savedPosters = [];
+var currentPoster = {};
 
 // what is being displayed currently on the main page;
 
@@ -129,18 +130,25 @@ var savedPosters = [];
 // window event listeners
 window.addEventListener('load', displayRandomPoster); //random poster per refresh
 
-// main page event listeners
+// main page button event listeners
 randomPosterButton.addEventListener('click', displayRandomPoster); // random poster per button click
 makeNewButton.addEventListener('click', showForm); // when clicked, make new button hides main page, displays form page
 showSavedButton.addEventListener('click', function() { // show saved posters
-    // displayMiniPosters();
     mainPosterSection.classList.toggle('hidden');
     savedPosterSection.classList.toggle('hidden');
-    displayMiniPosters();
-    //alert("this is posters");
+});
+savePosterButton.addEventListener('click', function() {
+  currentPoster = new Poster(posterImg.src, posterTitle.innerText, posterQuote.innerText);
+  for (var i = 0; i < savedPosters.length; i++) {
+    if (currentPoster.imageURL === savedPosters[i].imageURL && currentPoster.title === savedPosters[i].title && currentPoster.quote === savedPosters[i].quote) {
+      return;
+    }
+  }
+  savedPosters.push(currentPoster);
+  addPosterToGrid(currentPoster);
 });
 
-// section event listeners
+// section button and miniposter removal event listeners
 nevermindButton.addEventListener('click', formToMain);
 backToMainButton.addEventListener('click', savedToMain);
 showMyPosterButton.addEventListener('click', function(event) { // display user poster
@@ -150,22 +158,6 @@ showMyPosterButton.addEventListener('click', function(event) { // display user p
   posterTitle.innerText = titles[titles.length - 1];
   posterQuote.innerText = quotes[quotes.length - 1];
   event.preventDefault();
-});
-
-
-// When a user clicks the “Save This Poster” button
-savePosterButton.eventListener('click', function() {
-// the current main poster will be added to the savedPosters array
-  var currentImageUrl = posterImg.src;
-  var currentTitle = posterTitle.innerText;
-  var currentQuote = posterQuote.innerText;
-  var currentPoster = new Poster(currentQuote, currentTitle, currentImageUrl);
-  for (var i = 0; i < savedPosters.length; i++) {
-    // no duplicates
-    // if (currentPoster.id !== savedPosters[i].id) {
-      savedPosters.push(currentPoster);
-    // }
-  }
 });
 
 // functions and event handlers go here 👇
@@ -186,7 +178,9 @@ function displayRandomPoster(){
   //random quotes
   var randomQuoteNum = getRandomIndex(quotes);
   posterQuote.innerText = quotes[randomQuoteNum];
+  //assign currentPoster value
 }
+
 //section change functions
 function showForm() {
   mainPosterSection.classList.toggle('hidden'); // add CSS property hidden to main poster section
@@ -198,7 +192,6 @@ function formToMain() {
   posterFormSection.classList.toggle('hidden');
   mainPosterSection.classList.toggle('hidden');
 }
-
 function savedToMain() {
   mainPosterSection.classList.toggle('hidden');
   savedPosterSection.classList.toggle('hidden');
@@ -217,52 +210,12 @@ function collectUserInput() {
   titles.push(userPoster.title);
   quotes.push(userPoster.quote);
 }
-///save poster to saved poster section
 
-// All the posters in the savedPosters array should be displayed
-//in the saved posters grid section
+//save poster to saved poster section
+/* All the posters in the savedPosters array should be
+displayed in the saved posters grid section */
 
-// savedPostersGrid = article
-function displayMiniPosters() {
-// the JS variables of our HTML elements of interest
-  var miniPosterDiv = document.createElement('div');
-  var miniPosterImg = document.createElement('img');
-  var miniPosterH2 = document.createElement('h2');
-  var miniPosterH4 = document.createElement('h4');
-
-// make the div a child of the correct article section,
-// assigned the proper class to our DOM div element
-  savedPostersGrid.appendChild(miniPosterDiv);
-  miniPosterDiv.classList.add('mini-poster');
-
-// put our miniPosterImg, miniPosterH2, miniPosterH4
-// inside of our miniPosterDiv - how to I access inbetween the tags
-// of my miniPosterDiv? with its children!
-
-  miniPosterDiv.appendChild(miniPosterImg);
-  miniPosterDiv.appendChild(miniPosterH2);
-  miniPosterDiv.appendChild(miniPosterH4);
-
-/* need to set the img.src = to our URL of interest,
-set the h2.innerText = title of interest,
-set the h4.innerText = quote of interest; */
-
-// this was a test we ran to see if our syntax was buggy
-miniPosterImg.src = savedPosters[0].imageURL;
-miniPosterH2.innerText = savedPosters[0].title;
-miniPosterH4.innerText = savedPosters[0].quote;
-
-// this was our original thought to update the savedPosters array
-// with the current poster image;
-//   for (var i = 0; i < savedPosters.lenth; i++) {
-//     miniPosterImg.src = savedPosters[i].imageURL; // currentPoster.imageURL;
-//     miniPosterH2.innerText = savedPosters[i].title;
-//     miniPosterH4.innerText = savedPosters[i].quote;
-//   }
-}
-
-/*
-use the CSS classes, '.mini-poster img',
+/* use the CSS classes, '.mini-poster img',
 .'mini-poster h2', and '.mini-poster h4' to
 change the style of the saved posters in the
 saved posters array
@@ -272,5 +225,30 @@ saved posters array
     <h2>This is the title</h2>
     <h4>This is the quote</h4>
   </div>
-</article>
-*/
+</article> */
+
+function addPosterToGrid(currentPoster) {
+/* only create miniPosters for the length of the
+array! */
+  // the JS variables of our HTML elements of interest
+  var miniPosterDiv = document.createElement('div');
+  var miniPosterImg = document.createElement('img');
+  var miniPosterH2 = document.createElement('h2');
+  var miniPosterH4 = document.createElement('h4');
+  // miniPosterDiv.setAttribute("id", savedPosters[i].id);
+  /* make the div a child of the correct article section,
+  assigned the proper class to our DOM div element */
+  savedPostersGrid.appendChild(miniPosterDiv);
+  miniPosterDiv.classList.add('mini-poster');
+  /* put our miniPosterImg, miniPosterH2, miniPosterH4
+  inside of our miniPosterDiv */
+  miniPosterDiv.appendChild(miniPosterImg);
+  miniPosterDiv.appendChild(miniPosterH2);
+  miniPosterDiv.appendChild(miniPosterH4);
+  /* need to set the img.src = to our URL of interest,
+  set the h2.innerText = title of interest,
+  set the h4.innerText = quote of interest; */
+  miniPosterImg.src = currentPoster.imageURL;
+  miniPosterH2.innerText = currentPoster.title;
+  miniPosterH4.innerText = currentPoster.quote;
+}
