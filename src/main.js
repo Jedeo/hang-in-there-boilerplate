@@ -3,22 +3,23 @@
 var posterImg = document.querySelector('.poster-img');
 var posterTitle = document.querySelector('.poster-title');
 var posterQuote = document.querySelector('.poster-quote');
-//******************************************************//
+
 //homepage buttons
 var savePosterButton = document.querySelector('.save-poster');
 var showSavedButton = document.querySelector('.show-saved');
 var randomPosterButton = document.querySelector('.show-random');
 var makeNewButton = document.querySelector('.show-form');
-//******************************************************//
+
 //sections
 var mainPosterSection = document.querySelector('.main-poster');
 var posterFormSection = document.querySelector('.poster-form');
 var savedPosterSection = document.querySelector('.saved-posters');
-//******************************************************//
+
 // section buttons
 var nevermindButton = document.querySelector('.show-main');
 var backToMainButton = document.querySelector('.back-to-main');
 var showMyPosterButton = document.querySelector('.make-poster');
+
 // articles
 var savedPostersGrid = document.querySelector('.saved-posters-grid');
 
@@ -128,15 +129,26 @@ var currentPoster = {};
 
 // event listeners go here 👇
 // window event listeners
-window.addEventListener('load', displayRandomPoster); //random poster per refresh
+
+//new random poster displayed per refresh
+window.addEventListener('load', displayRandomPoster);
 
 // main page button event listeners
-randomPosterButton.addEventListener('click', displayRandomPoster); // random poster per button click
-makeNewButton.addEventListener('click', showForm); // when clicked, make new button hides main page, displays form page
-showSavedButton.addEventListener('click', function() { // show saved posters
+
+// random poster displayed per button click
+randomPosterButton.addEventListener('click', displayRandomPoster);
+
+// when clicked, make new button hides main section, displays form section
+makeNewButton.addEventListener('click', showForm);
+
+// when clicked, hides the main section, displays the saved posters section
+showSavedButton.addEventListener('click', function() {
     mainPosterSection.classList.toggle('hidden');
     savedPosterSection.classList.toggle('hidden');
 });
+
+// only adds unique posters to the savedPosters array, and adds
+// those unique posters to the mini-poster grid;
 savePosterButton.addEventListener('click', function() {
   currentPoster = new Poster(posterImg.src, posterTitle.innerText, posterQuote.innerText);
   for (var i = 0; i < savedPosters.length; i++) {
@@ -149,9 +161,18 @@ savePosterButton.addEventListener('click', function() {
 });
 
 // section button and miniposter removal event listeners
+
+// switches form section back to hidden, displays main section;
 nevermindButton.addEventListener('click', formToMain);
+
+// switches saved posters section to hidden, displays main section;
 backToMainButton.addEventListener('click', savedToMain);
-showMyPosterButton.addEventListener('click', function(event) { // display user poster
+
+// switch form section back to hidden, display main section;
+// collect user input values, creates a Poster object instance,
+// and assigns the instance's properties to the most recently pushed
+// properties in the respective property-arrays (images, titles, quotes);
+showMyPosterButton.addEventListener('click', function(event) {
   formToMain();
   collectUserInput();
   posterImg.src = images[images.length - 1];
@@ -192,18 +213,19 @@ function formToMain() {
   posterFormSection.classList.toggle('hidden');
   mainPosterSection.classList.toggle('hidden');
 }
+
 function savedToMain() {
   mainPosterSection.classList.toggle('hidden');
   savedPosterSection.classList.toggle('hidden');
 }
 
-//show my poster functionality
+//show my poster functionality; collecting user input
 function collectUserInput() {
   //collecting userInputs
   let userUrlInput = document.getElementById('poster-image-url').value;
   let userTitleInput = document.getElementById('poster-title').value;
   let userQuoteInput = document.getElementById('poster-quote').value;
-  // instantiating a new Poster object instance, called userPoster
+  //instantiating a new Poster object instance, called userPoster
   let userPoster = new Poster(userUrlInput, userTitleInput, userQuoteInput);
   //pushing userInputs to respective arrays
   images.push(userPoster.imageURL);
@@ -211,31 +233,13 @@ function collectUserInput() {
   quotes.push(userPoster.quote);
 }
 
-//save poster to saved poster section
-/* All the posters in the savedPosters array should be
-displayed in the saved posters grid section */
-
-/* use the CSS classes, '.mini-poster img',
-.'mini-poster h2', and '.mini-poster h4' to
-change the style of the saved posters in the
-saved posters array
-<article class="saved-posters-grid">
-  <div class="mini-poster">
-    <img src="url of interest">
-    <h2>This is the title</h2>
-    <h4>This is the quote</h4>
-  </div>
-</article> */
-
+//add unique saved poster to saved poster section grid;
 function addPosterToGrid(currentPoster) {
-/* only create miniPosters for the length of the
-array! */
   // the JS variables of our HTML elements of interest
   var miniPosterDiv = document.createElement('div');
   var miniPosterImg = document.createElement('img');
   var miniPosterH2 = document.createElement('h2');
   var miniPosterH4 = document.createElement('h4');
-  // miniPosterDiv.setAttribute("id", savedPosters[i].id);
   /* make the div a child of the correct article section,
   assigned the proper class to our DOM div element */
   savedPostersGrid.appendChild(miniPosterDiv);
